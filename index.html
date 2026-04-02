@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librario — La tua libreria personale</title>
+  <meta name="description" content="Librario - Cataloga libri, gestisci scaffali, prestiti e wishlist">
+  <meta property="og:title" content="Librario by RobxTech">
+  <meta property="og:description" content="La tua libreria personale, sempre con te">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --amber:       #C8922A;
+      --amber-dark:  #A67520;
+      --amber-light: #E8B84B;
+      --amber-a12:   rgba(200,146,42,.12);
+      --amber-a20:   rgba(200,146,42,.20);
+      --amber-a35:   rgba(200,146,42,.35);
+      --bg:          #FDF8F0;
+      --white:       #FFFFFF;
+      --ink:         #2D2013;
+      --ink-2:       #7A5C35;
+      --ink-3:       #A07848;
+      --shadow-sm:   0 2px 12px rgba(100,60,10,.08);
+      --shadow-md:   0 4px 24px rgba(100,60,10,.12);
+      --shadow-lg:   0 8px 40px rgba(100,60,10,.20);
+      --ff-title:    'Playfair Display', Georgia, serif;
+      --ff-body:     'Inter', system-ui, sans-serif;
+      --radius:      16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--ff-body);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(253,248,240,.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--amber-a20);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    .logo-texts {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .logo-brand {
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .logo-name {
+      font-family: var(--ff-title);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    /* ─── LANGUAGE SELECTOR ──────────────────────────────── */
+    .lang-bar {
+      display: flex;
+      gap: .125rem;
+      flex-wrap: nowrap;
+    }
+
+    .lang-btn {
+      background: none;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: .25rem .3rem;
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: opacity .18s, border-color .18s, background .18s;
+      opacity: .45;
+    }
+
+    .lang-btn:hover  { opacity: .85; background: var(--amber-a12); }
+    .lang-btn.active { opacity: 1;   border-color: var(--amber);   background: var(--amber-a12); }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5.5rem 1.5rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative blobs */
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero::before {
+      width: 420px; height: 420px;
+      top: -80px; right: -100px;
+      background: radial-gradient(circle, rgba(200,146,42,.10) 0%, transparent 70%);
+    }
+    .hero::after {
+      width: 320px; height: 320px;
+      bottom: 60px; left: -80px;
+      background: radial-gradient(circle, rgba(200,146,42,.08) 0%, transparent 70%);
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      background: var(--amber-a12);
+      border: 1px solid var(--amber-a20);
+      border-radius: 999px;
+      padding: .32rem .9rem;
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--amber-dark);
+      margin-bottom: 2rem;
+    }
+    .badge svg { width: 13px; height: 13px; fill: var(--amber); }
+
+    h1 {
+      font-family: var(--ff-title);
+      font-size: clamp(2.1rem, 5.5vw, 3.75rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -.025em;
+      color: var(--ink);
+      max-width: 800px;
+      margin: 0 auto 1.25rem;
+    }
+    h1 em { font-style: italic; color: var(--amber); }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: var(--ink-2);
+      max-width: 560px;
+      margin: 0 auto 2.75rem;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+
+    /* ─── CTA BUTTONS ────────────────────────────────────── */
+    .cta-row {
+      display: flex;
+      gap: .875rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 4.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .9rem 1.65rem;
+      border-radius: 14px;
+      font-size: .95rem;
+      font-weight: 600;
+      font-family: var(--ff-body);
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform .22s ease, box-shadow .22s ease, background .18s ease, border-color .18s ease;
+      white-space: nowrap;
+    }
+    .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .btn-apple {
+      background: var(--ink);
+      color: #fff;
+    }
+    .btn-apple:hover {
+      background: #180d04;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(45,32,19,.32);
+    }
+
+    .btn-google {
+      background: var(--white);
+      color: var(--ink);
+      border: 1.5px solid var(--amber-a20);
+    }
+    .btn-google:hover {
+      border-color: var(--amber);
+      color: var(--amber-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ─── BOOK SHELF VISUAL ──────────────────────────────── */
+    .shelf-visual {
+      display: flex;
+      justify-content: center;
+    }
+
+    .shelf-wrap {
+      display: inline-block;
+    }
+
+    .books-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      padding: 0 16px;
+    }
+
+    .book {
+      position: relative;
+      border-radius: 3px 1px 1px 3px;
+      box-shadow: inset -3px 0 6px rgba(0,0,0,.10);
+    }
+    .book::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: rgba(255,255,255,.18);
+      border-radius: 3px 0 0 3px;
+    }
+
+    .shelf-plank {
+      height: 7px;
+      background: linear-gradient(90deg, var(--amber-dark), var(--amber), var(--amber-dark));
+      border-radius: 4px;
+      margin-top: 1px;
+      box-shadow: 0 4px 14px var(--amber-a35);
+    }
+
+    /* ─── FEATURES ───────────────────────────────────────── */
+    .features-section {
+      background: var(--white);
+      padding: 5.5rem 1.5rem 6rem;
+      border-top: 1px solid rgba(200,146,42,.10);
+    }
+
+    .features-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .eyebrow {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: .65rem;
+    }
+
+    .section-h2 {
+      font-family: var(--ff-title);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -.015em;
+    }
+
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      background: var(--bg);
+      border: 1px solid var(--amber-a20);
+      border-radius: 20px;
+      padding: 1.85rem 1.25rem 1.75rem;
+      text-align: center;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--amber-a35);
+    }
+
+    .f-icon {
+      width: 54px;
+      height: 54px;
+      background: linear-gradient(135deg, rgba(200,146,42,.16), rgba(200,146,42,.06));
+      border: 1px solid var(--amber-a20);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.15rem;
+    }
+    .f-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--amber);
+    }
+
+    .f-title {
+      font-family: var(--ff-title);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: .5rem;
+    }
+
+    .f-desc {
+      font-size: .83rem;
+      color: var(--ink-2);
+      line-height: 1.65;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      background: #1A0D03;
+      color: rgba(255,255,255,.5);
+      padding: 3rem 1.5rem 2.5rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      text-align: center;
+    }
+
+    .footer-logo-name {
+      font-family: var(--ff-title);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--amber);
+      line-height: 1.1;
+    }
+
+    .footer-brand {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.28);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,.45);
+      text-decoration: none;
+      font-size: .875rem;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--amber); }
+
+    .footer-copy {
+      font-size: .76rem;
+      color: rgba(255,255,255,.22);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .grid-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .grid-5 { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .hero { padding: 4rem 1rem 2.5rem; }
+      h1 { letter-spacing: -.015em; }
+    }
+    @media (max-width: 460px) {
+      .lang-btn { font-size: 1rem; padding: .22rem .24rem; }
+      .logo-name { font-size: 1.15rem; }
+      .grid-5 { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
+      .btn { font-size: .88rem; padding: .8rem 1.2rem; }
+    }
+
+    /* ─── FADE-IN ANIMATION ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero > * {
+      animation: fadeUp .55s ease both;
+    }
+    .hero .badge     { animation-delay: .05s; }
+    .hero h1         { animation-delay: .15s; }
+    .hero .subtitle  { animation-delay: .25s; }
+    .hero .cta-row   { animation-delay: .35s; }
+    .hero .shelf-visual { animation-delay: .45s; }
+
+    /* ─── LANG TRANSITION ────────────────────────────────── */
+    .lang-fade {
+      opacity: 0;
+      transition: opacity .18s ease;
+    }
+    .lang-visible {
+      opacity: 1;
+      transition: opacity .18s ease;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ════════════════════════ -->
+<header>
+  <nav class="nav">
+    <a href="/" class="logo" aria-label="Librario – RobxTech">
+      <!-- Book logo icon -->
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="#C8922A" fill-opacity=".12"/>
+        <!-- Left book spine -->
+        <rect x="9" y="9" width="10" height="22" rx="2" fill="#C8922A"/>
+        <!-- Right book spine -->
+        <rect x="21" y="9" width="10" height="22" rx="2" fill="#C8922A" fill-opacity=".55"/>
+        <!-- Highlight lines on left book -->
+        <rect x="12" y="14" width="4" height="1.5" rx=".75" fill="white" fill-opacity=".5"/>
+        <rect x="12" y="17.5" width="4" height="1.5" rx=".75" fill="white" fill-opacity=".5"/>
+        <rect x="12" y="21" width="4" height="1.5" rx=".75" fill="white" fill-opacity=".5"/>
+      </svg>
+      <div class="logo-texts">
+        <span class="logo-brand">RobxTech</span>
+        <span class="logo-name">Librario</span>
+      </div>
+    </a>
+
+    <div class="lang-bar" role="group" aria-label="Language selector">
+      <button class="lang-btn" data-lang="it" title="Italiano">🇮🇹</button>
+      <button class="lang-btn" data-lang="en" title="English">🇬🇧</button>
+      <button class="lang-btn" data-lang="fr" title="Français">🇫🇷</button>
+      <button class="lang-btn" data-lang="de" title="Deutsch">🇩🇪</button>
+      <button class="lang-btn" data-lang="ja" title="日本語">🇯🇵</button>
+      <button class="lang-btn" data-lang="zh" title="中文">🇨🇳</button>
+      <button class="lang-btn" data-lang="ko" title="한국어">🇰🇷</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════════ HERO ══════════════════════════ -->
+<main>
+  <section class="hero">
+    <div class="badge">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 7.5A6.5 6.5 0 1 1 7.5 1 6.507 6.507 0 0 1 14 7.5zm-3.646-1.896a.5.5 0 0 0-.708-.708L7 7.543 5.854 6.396a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+      </svg>
+      <span data-i18n="badge">Disponibile su iOS e Android</span>
+    </div>
+
+    <h1 data-i18n-html="headline">La tua libreria personale, <em>sempre con te</em></h1>
+
+    <p class="subtitle" data-i18n="subtitle">
+      Cataloga i tuoi libri, organizza gli scaffali, gestisci i prestiti e tieni traccia della tua wishlist.
+    </p>
+
+    <div class="cta-row">
+      <a href="#" class="btn btn-apple" id="btn-appstore">
+        <!-- Apple logo -->
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        <span data-i18n="appStore">Scarica su App Store</span>
+      </a>
+      <a href="#" class="btn btn-google" id="btn-googleplay">
+        <!-- Google Play triangle -->
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199a1 1 0 0 1 0 1.984L15.396 12l2.302-2.302zm-13.239-7.33L15.396 8.51l-2.302 2.302-8.636-8.635z"/>
+        </svg>
+        <span data-i18n="googlePlay">Scarica su Google Play</span>
+      </a>
+    </div>
+
+    <!-- Decorative book shelf -->
+    <div class="shelf-visual" aria-hidden="true">
+      <div class="shelf-wrap">
+        <div class="books-row">
+          <div class="book" style="width:18px;height:86px;background:#C8922A"></div>
+          <div class="book" style="width:24px;height:112px;background:#E8A030"></div>
+          <div class="book" style="width:15px;height:74px;background:#D4841A"></div>
+          <div class="book" style="width:21px;height:98px;background:#B87C20"></div>
+          <div class="book" style="width:27px;height:118px;background:#C8922A;opacity:.72"></div>
+          <div class="book" style="width:14px;height:66px;background:#E8B84B"></div>
+          <div class="book" style="width:19px;height:104px;background:#A67520"></div>
+          <div class="book" style="width:22px;height:90px;background:#D4A020"></div>
+          <div class="book" style="width:25px;height:110px;background:#C8922A;opacity:.85"></div>
+          <div class="book" style="width:16px;height:78px;background:#E8A030;opacity:.75"></div>
+          <div class="book" style="width:20px;height:95px;background:#B87C20"></div>
+          <div class="book" style="width:17px;height:68px;background:#C8922A;opacity:.9"></div>
+          <div class="book" style="width:23px;height:106px;background:#D4841A;opacity:.8"></div>
+        </div>
+        <div class="shelf-plank"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════ FEATURES ════════════════════════ -->
+  <section class="features-section">
+    <div class="features-inner">
+      <div class="section-head">
+        <p class="eyebrow" data-i18n="featuresLabel">Funzionalità</p>
+        <h2 class="section-h2" data-i18n="featuresTitle">Tutto ciò di cui hai bisogno</h2>
+      </div>
+      <div class="grid-5" id="features-grid">
+        <!-- Injected by JavaScript -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════════════ FOOTER ════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo-name">Librario</div>
+      <div class="footer-brand">by RobxTech</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://robxtech-dev.github.io/privacy-policy" data-i18n="privacy">Privacy Policy</a>
+      <a href="mailto:support@robxtech.com">support@robxtech.com</a>
+    </div>
+    <p class="footer-copy" id="footer-copy">© 2024 RobxTech. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ═══════════════════ SCRIPT ════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── SVG icons ─────────────────────────────────────── */
+  const ICONS = {
+    catalog: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>`,
+    shelves: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="4" rx="1"/>
+      <rect x="2" y="11" width="20" height="4" rx="1"/>
+      <rect x="2" y="19" width="20" height="3" rx="1"/>
+      <path d="M6 7v4M10 7v4M15 15v3"/>
+    </svg>`,
+    loans: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="17 1 21 5 17 9"/>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+      <polyline points="7 23 3 19 7 15"/>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+    </svg>`,
+    wishlist: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>`,
+    charts: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6"  y1="20" x2="6"  y2="14"/>
+      <line x1="2"  y1="20" x2="22" y2="20"/>
+    </svg>`,
+  };
+
+  /* ── Translations ──────────────────────────────────── */
+  const T = {
+    it: {
+      badge:         'Disponibile su iOS e Android',
+      headline:      'La tua libreria personale, <em>sempre con te</em>',
+      subtitle:      'Cataloga i tuoi libri, organizza gli scaffali, gestisci i prestiti e tieni traccia della tua wishlist. Tutto in un\'unica app.',
+      appStore:      'Scarica su App Store',
+      googlePlay:    'Scarica su Google Play',
+      featuresLabel: 'Funzionalità',
+      featuresTitle: 'Tutto ciò di cui hai bisogno',
+      privacy:       'Privacy Policy',
+      features: [
+        { icon:'catalog',  title:'Catalogo',  desc:'Scansiona o cerca i tuoi libri e crea il tuo catalogo personale con copertine e dettagli completi.' },
+        { icon:'shelves',  title:'Scaffali',  desc:'Organizza i tuoi libri in scaffali personalizzati e trovali sempre al volo, in un istante.' },
+        { icon:'loans',    title:'Prestiti',  desc:'Tieni traccia di chi ha i tuoi libri in prestito e ricevi un promemoria quando è il momento di restituirli.' },
+        { icon:'wishlist', title:'Wishlist',  desc:'Salva i libri che vuoi leggere e non perdere mai le novità che ti interessano.' },
+        { icon:'charts',   title:'Grafici',   desc:'Visualizza le tue statistiche di lettura con grafici chiari e intuitivi.' },
+      ],
+    },
+    en: {
+      badge:         'Available on iOS & Android',
+      headline:      'Your personal library, <em>always with you</em>',
+      subtitle:      'Catalog your books, organize your shelves, manage loans and track your wishlist. All in one app.',
+      appStore:      'Download on App Store',
+      googlePlay:    'Get it on Google Play',
+      featuresLabel: 'Features',
+      featuresTitle: 'Everything you need',
+      privacy:       'Privacy Policy',
+      features: [
+        { icon:'catalog',  title:'Catalog',   desc:'Scan or search your books and build your personal catalog with covers and full details.' },
+        { icon:'shelves',  title:'Shelves',   desc:'Organize your books into custom shelves and find them instantly whenever you need.' },
+        { icon:'loans',    title:'Loans',     desc:'Keep track of who has your books and get reminders when it\'s time to return them.' },
+        { icon:'wishlist', title:'Wishlist',  desc:'Save books you want to read and never miss new releases that interest you.' },
+        { icon:'charts',   title:'Charts',    desc:'Visualize your reading statistics with clear and intuitive charts.' },
+      ],
+    },
+    fr: {
+      badge:         'Disponible sur iOS et Android',
+      headline:      'Votre bibliothèque personnelle, <em>toujours avec vous</em>',
+      subtitle:      'Cataloguez vos livres, organisez vos étagères, gérez les prêts et suivez votre liste de souhaits. Tout dans une seule application.',
+      appStore:      'Télécharger sur App Store',
+      googlePlay:    'Obtenir sur Google Play',
+      featuresLabel: 'Fonctionnalités',
+      featuresTitle: 'Tout ce dont vous avez besoin',
+      privacy:       'Politique de confidentialité',
+      features: [
+        { icon:'catalog',  title:'Catalogue',         desc:'Scannez ou recherchez vos livres et créez votre catalogue personnel avec couvertures et détails.' },
+        { icon:'shelves',  title:'Étagères',          desc:'Organisez vos livres dans des étagères personnalisées et retrouvez-les instantanément.' },
+        { icon:'loans',    title:'Prêts',             desc:'Gardez une trace de qui a vos livres et recevez des rappels quand il est temps de les récupérer.' },
+        { icon:'wishlist', title:'Liste de souhaits', desc:'Sauvegardez les livres que vous voulez lire et ne manquez jamais les nouvelles sorties.' },
+        { icon:'charts',   title:'Graphiques',        desc:'Visualisez vos statistiques de lecture avec des graphiques clairs et intuitifs.' },
+      ],
+    },
+    de: {
+      badge:         'Verfügbar auf iOS & Android',
+      headline:      'Deine persönliche Bibliothek, <em>immer dabei</em>',
+      subtitle:      'Katalogisiere deine Bücher, organisiere deine Regale, verwalte Ausleihen und behalte deine Wunschliste im Blick. Alles in einer App.',
+      appStore:      'Im App Store laden',
+      googlePlay:    'Bei Google Play herunterladen',
+      featuresLabel: 'Funktionen',
+      featuresTitle: 'Alles, was du brauchst',
+      privacy:       'Datenschutzerklärung',
+      features: [
+        { icon:'catalog',  title:'Katalog',      desc:'Scanne oder suche deine Bücher und erstelle deinen persönlichen Katalog mit Covern und Details.' },
+        { icon:'shelves',  title:'Regale',       desc:'Organisiere deine Bücher in benutzerdefinierten Regalen und finde sie sofort.' },
+        { icon:'loans',    title:'Ausleihen',    desc:'Behalte den Überblick, wer deine Bücher hat, und erhalte Erinnerungen für die Rückgabe.' },
+        { icon:'wishlist', title:'Wunschliste',  desc:'Speichere Bücher, die du lesen möchtest, und verpasse nie neue Veröffentlichungen.' },
+        { icon:'charts',   title:'Diagramme',    desc:'Visualisiere deine Lesestatistiken mit übersichtlichen und intuitiven Diagrammen.' },
+      ],
+    },
+    ja: {
+      badge:         'iOS・Androidで利用可能',
+      headline:      'あなただけの図書館、<em>いつでもそばに</em>',
+      subtitle:      '本をカタログ化し、本棚を整理し、貸し借りを管理し、ウィッシュリストを追跡。すべてひとつのアプリで。',
+      appStore:      'App Storeでダウンロード',
+      googlePlay:    'Google Playで入手',
+      featuresLabel: '機能',
+      featuresTitle: '必要なすべてが揃っています',
+      privacy:       'プライバシーポリシー',
+      features: [
+        { icon:'catalog',  title:'カタログ',           desc:'本をスキャンまたは検索して、カバーと詳細情報を含む個人カタログを作成します。' },
+        { icon:'shelves',  title:'本棚',               desc:'本をカスタム本棚に整理して、いつでも素早く見つけることができます。' },
+        { icon:'loans',    title:'貸し借り管理',       desc:'誰があなたの本を持っているかを追跡し、返却のリマインダーを受け取ります。' },
+        { icon:'wishlist', title:'ウィッシュリスト',   desc:'読みたい本を保存して、気になる新刊を見逃さないようにしましょう。' },
+        { icon:'charts',   title:'グラフ',             desc:'明確で直感的なグラフで読書統計を可視化します。' },
+      ],
+    },
+    zh: {
+      badge:         '适用于iOS和Android',
+      headline:      '您的个人图书馆，<em>随时随地</em>',
+      subtitle:      '整理您的藏书，管理书架，追踪借阅记录，维护心愿单。一切尽在一款应用。',
+      appStore:      '在App Store下载',
+      googlePlay:    '在Google Play获取',
+      featuresLabel: '功能',
+      featuresTitle: '您所需的一切',
+      privacy:       '隐私政策',
+      features: [
+        { icon:'catalog',  title:'目录',   desc:'扫描或搜索您的书籍，创建包含封面和完整详情的个人目录。' },
+        { icon:'shelves',  title:'书架',   desc:'将书籍整理到自定义书架中，随时快速找到它们。' },
+        { icon:'loans',    title:'借阅',   desc:'追踪谁借了您的书，并在需要归还时收到提醒。' },
+        { icon:'wishlist', title:'心愿单', desc:'保存您想读的书，不错过任何感兴趣的新书。' },
+        { icon:'charts',   title:'图表',   desc:'通过清晰直观的图表可视化您的阅读统计数据。' },
+      ],
+    },
+    ko: {
+      badge:         'iOS 및 Android에서 이용 가능',
+      headline:      '당신만의 개인 도서관, <em>언제나 함께</em>',
+      subtitle:      '책을 정리하고, 책장을 관리하고, 대출을 추적하고, 위시리스트를 관리하세요. 모든 것이 하나의 앱에.',
+      appStore:      'App Store에서 다운로드',
+      googlePlay:    'Google Play에서 받기',
+      featuresLabel: '기능',
+      featuresTitle: '필요한 모든 것',
+      privacy:       '개인정보 처리방침',
+      features: [
+        { icon:'catalog',  title:'카탈로그',        desc:'책을 스캔하거나 검색하여 표지와 세부 정보가 포함된 개인 카탈로그를 만드세요.' },
+        { icon:'shelves',  title:'책장',            desc:'책을 맞춤 책장으로 정리하여 언제든지 즉시 찾을 수 있습니다.' },
+        { icon:'loans',    title:'대출 관리',       desc:'누가 당신의 책을 가지고 있는지 추적하고, 반납 알림을 받으세요.' },
+        { icon:'wishlist', title:'위시리스트',      desc:'읽고 싶은 책을 저장하고 관심 있는 신간을 놓치지 마세요.' },
+        { icon:'charts',   title:'차트',            desc:'명확하고 직관적인 차트로 독서 통계를 시각화하세요.' },
+      ],
+    },
+  };
+
+  /* ── State ─────────────────────────────────────────── */
+  let currentLang = 'it';
+
+  /* ── setLang ───────────────────────────────────────── */
+  function setLang(code) {
+    if (!T[code] || code === currentLang) return;
+    currentLang = code;
+    const tr = T[code];
+
+    // html lang attribute
+    document.documentElement.lang = code;
+
+    // text nodes
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      var key = el.dataset.i18n;
+      if (tr[key] !== undefined) el.textContent = tr[key];
+    });
+
+    // html nodes (headline with <em>)
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+      var key = el.dataset.i18nHtml;
+      if (tr[key] !== undefined) el.innerHTML = tr[key];
+    });
+
+    // active button
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.lang === code);
+    });
+
+    // feature cards
+    var grid = document.getElementById('features-grid');
+    grid.innerHTML = tr.features.map(function(f) {
+      return '<div class="feature-card">'
+        + '<div class="f-icon">' + ICONS[f.icon] + '</div>'
+        + '<h3 class="f-title">' + f.title + '</h3>'
+        + '<p class="f-desc">'  + f.desc  + '</p>'
+        + '</div>';
+    }).join('');
+  }
+
+  /* ── Init ──────────────────────────────────────────── */
+  // Year
+  document.getElementById('footer-copy').textContent =
+    '© ' + new Date().getFullYear() + ' RobxTech. All rights reserved.';
+
+  // Button listeners
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { setLang(btn.dataset.lang); });
+  });
+
+  // Auto-detect browser language
+  var supported = Object.keys(T);
+  var navLang = ((navigator.language || navigator.userLanguage || 'en')
+    .split('-')[0]).toLowerCase();
+  var initLang = supported.includes(navLang) ? navLang : 'en';
+
+  // Force currentLang so setLang runs on first call
+  currentLang = '';
+  setLang(initLang);
+})();
+</script>
+</body>
+</html>
